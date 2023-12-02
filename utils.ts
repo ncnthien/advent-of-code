@@ -4,7 +4,8 @@ import * as path from 'path';
 
 const adventOfCodePath = {
     '2023': {
-        'day-1': '/2023/day-1'
+        'day-1': '/2023/day-1',
+        'day-2': '/2023/day-2'
     }
 }
 
