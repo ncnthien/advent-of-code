@@ -1,6 +1,7 @@
 import { readFile } from "../../utils"
 
 type Matrix = string[][]
+type StarCoordinate = string
 
 interface Zone {
   startX: number
@@ -85,3 +86,59 @@ function getResultPart1(matrix: Matrix) {
 }
 
 console.log("firstResult: ", getResultPart1(matrix))
+
+// Part 2
+
+function getSurroundStars(matrix: Matrix, zone: Zone) {
+  const { startX, endX, startY, endY } = zone
+  const stars: string[] = []
+
+  for (let y = startY - 1; y <= endY + 1; y++) {
+    for (let x = startX - 1; x <= endX + 1; x++) {
+      if (isCoordinateInZone(zone, x, y) || !matrix[y]?.[x]) {
+        continue
+      }
+      if (matrix[y][x] === "*") {
+        stars.push(`${y}${x}`)
+      }
+    }
+  }
+  return stars
+}
+
+function getResultPart2(matrix: Matrix) {
+  let total = 0
+  const map = new Map<StarCoordinate, number>()
+
+  for (let y = 0; y <= maxY; y++) {
+    for (let x = 0; x <= maxX; x++) {
+      if (!isNumber(matrix[y][x])) {
+        continue
+      }
+
+      const number = getNumberInMatrix(matrix, x, y)
+      const numberLength = String(number).length
+      const zone: Zone = {
+        startX: x,
+        endX: x + numberLength - 1,
+        startY: y,
+        endY: y
+      }
+      const surroundStars = getSurroundStars(matrix, zone)
+      surroundStars.forEach((star) => {
+        if (map.has(star)) {
+          total += map.get(star) * number
+          map.delete(star)
+        } else {
+          map.set(star, number)
+        }
+      })
+
+      x += numberLength - 1
+    }
+  }
+
+  return total
+}
+
+console.log("secondResult: ", getResultPart2(matrix))
