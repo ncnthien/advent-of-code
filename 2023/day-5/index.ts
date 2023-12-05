@@ -51,3 +51,26 @@ const seeds = seedsString.split(": ")[1].split(" ").map(Number)
 const firstResult = Math.min(...seeds.map(convertSeedToLocation))
 
 console.log("firstResult: ", firstResult)
+
+// Part 2
+function seedsToSeedsNumber(seeds: number[]) {
+  let min = convertSeedToLocation(seeds[0])
+
+  for (let i = 0; i < seeds.length; i += 2) {
+    const startSeedNumber = seeds[i]
+    const length = seeds[i + 1]
+    const endSeedNumber = startSeedNumber + length - 1
+    for (let seedNumber = startSeedNumber; seedNumber <= endSeedNumber; seedNumber++) {
+      const location = convertSeedToLocation(seedNumber)
+      if (location < min) {
+        min = location
+      }
+    }
+  }
+  return min
+}
+
+const secondResult = seedsToSeedsNumber(seeds)
+
+console.log("secondResult: ", secondResult)
+// execution time: 16:30.246 (m:ss.mmm)
