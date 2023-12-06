@@ -47,3 +47,18 @@ function getResultPart1() {
 }
 
 console.log("firstResult: ", getResultPart1())
+
+// Part 2
+const longTime = timesString
+  .split(": ")[1]
+  .split(" ")
+  .filter((num) => num)
+  .join("")
+const longDistance = distancesString
+  .split(": ")[1]
+  .split(" ")
+  .filter((num) => num)
+  .join("")
+const longRace: Race = { time: Number(longTime), distance: Number(longDistance) }
+
+console.log("secondResult: ", getPossibleSpeedQuantityFromRace(longRace))
