@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": [
+      "ESNext.Array",
       "es2023",
       "dom"
     ]

@@ -9,7 +9,8 @@ const adventOfCodePath = {
     "day-3": "/2023/day-3",
     "day-4": "/2023/day-4",
     "day-5": "/2023/day-5",
-    "day-6": "/2023/day-6"
+    "day-6": "/2023/day-6",
+    "day-7": "/2023/day-7"
   }
 }
 
