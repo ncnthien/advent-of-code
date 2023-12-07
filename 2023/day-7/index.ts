@@ -2,7 +2,7 @@ import { readFile } from "../../utils"
 
 interface Hand {
   id: number
-  card: string
+  cards: string
 }
 
 const input = readFile("2023", "day-7", "input.txt")
@@ -80,12 +80,12 @@ function getResultPart1() {
   const hands: Hand[] = handsString.map((handString) => {
     const [cardString, id] = handString.split(" ")
     return {
-      card: cardString,
+      cards: cardString,
       id: Number(id)
     }
   })
 
-  hands.sort((firstHand, secondHand) => compareCards(firstHand.card, secondHand.card))
+  hands.sort((firstHand, secondHand) => compareCards(firstHand.cards, secondHand.cards))
 
   return hands.reduce((acc, hand, index) => {
     return acc + hand.id * (index + 1)
@@ -93,3 +93,93 @@ function getResultPart1() {
 }
 
 console.log("firstResult: ", getResultPart1())
+
+// Part 2
+
+const cardRankWithFakeJoker = {
+  J: -1,
+  "2": 0,
+  "3": 1,
+  "4": 2,
+  "5": 3,
+  "6": 4,
+  "7": 5,
+  "8": 6,
+  "9": 7,
+  T: 8,
+  Q: 10,
+  K: 11,
+  A: 12
+}
+
+function isFakeableCards(cardsString: string) {
+  return cardsString.includes("J")
+}
+
+function getRankOfFakeCards(cardsString: string) {
+  const cardsSet = new Set(cardsString.split(""))
+  let maxRank = Number.MIN_SAFE_INTEGER
+
+  Array.from(cardsSet).forEach((card) => {
+    const rankWithFakeCard = getRankOfCards(cardsString.replaceAll("J", card))
+    if (rankWithFakeCard > maxRank) maxRank = rankWithFakeCard
+  })
+
+  return maxRank
+}
+
+function compareSameRankCardsWithFake({
+  firstCardString,
+  isFirstCardFakeable,
+  secondCardString,
+  isSecondCardFakeable
+}: {
+  firstCardString: string
+  isFirstCardFakeable: boolean
+  secondCardString: string
+  isSecondCardFakeable: boolean
+}) {
+  const firstCardRankBoard = isFirstCardFakeable ? cardRankWithFakeJoker : cardRank
+  const secondCardRankBoard = isSecondCardFakeable ? cardRankWithFakeJoker : cardRank
+  for (let i = 0; i < firstCardString.length; i++) {
+    if (firstCardRankBoard[firstCardString[i]] > secondCardRankBoard[secondCardString[i]]) return 1
+    if (firstCardRankBoard[firstCardString[i]] < secondCardRankBoard[secondCardString[i]]) return -1
+  }
+  console.log("this case is invalid")
+  return 0
+}
+
+function compareCardsWithFake(firstCardString: string, secondCardString: string) {
+  const isFirstCardFakeable = isFakeableCards(firstCardString)
+  const isSecondCardFakeable = isFakeableCards(secondCardString)
+  const firstCardRank = isFirstCardFakeable ? getRankOfFakeCards(firstCardString) : getRankOfCards(firstCardString)
+  const secondCardRank = isSecondCardFakeable ? getRankOfFakeCards(secondCardString) : getRankOfCards(secondCardString)
+
+  if (firstCardRank === secondCardRank)
+    return compareSameRankCardsWithFake({
+      firstCardString,
+      secondCardString,
+      isFirstCardFakeable,
+      isSecondCardFakeable
+    })
+  if (firstCardRank > secondCardRank) return 1
+  if (firstCardRank < secondCardRank) return -1
+}
+
+function getResultPart2() {
+  const hands: Hand[] = handsString.map((handString) => {
+    const [cardString, id] = handString.split(" ")
+    return {
+      cards: cardString,
+      id: Number(id)
+    }
+  })
+
+  hands.sort((firstHand, secondHand) => compareCardsWithFake(firstHand.cards, secondHand.cards))
+
+  return hands.reduce((acc, hand, index) => {
+    return acc + hand.id * (index + 1)
+  }, 0)
+}
+
+console.log("secondResult: ", getResultPart2())
