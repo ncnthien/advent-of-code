@@ -17,8 +17,9 @@ function convertNodesStringToNode(nodesString: string[]): NodeMap {
   return nodeMap
 }
 
+const nodeMap = convertNodesStringToNode(nodesString)
+
 function getResultPart1() {
-  const nodeMap = convertNodesStringToNode(nodesString)
   let current = 'AAA'
   let count = 0
   let index = 0
@@ -38,3 +39,44 @@ function getResultPart1() {
 }
 
 console.log('firstResult: ', getResultPart1())
+
+// Part 2
+function getCountToZ(node: string) {
+  let current = node
+  let currentCount = 0
+  let currentIndex = 0
+
+  while (true) {
+    if (current.endsWith('Z')) {
+      return currentCount
+    }
+    current = nodeMap.get(current)[commands[currentIndex] === "L" ? 0 : 1]
+    currentCount++
+
+    if (currentIndex === commands.length - 1) {
+      currentIndex = 0
+    } else {
+      currentIndex++
+    }
+  }
+}
+
+function getMutualCommonMultipleOfCounts(counts: number[]) {
+  const clonedCounts = [...counts]
+  clonedCounts.sort((a, b) => a - b)
+  let mutualCommonMultiple = 0
+
+  while (true) {
+    mutualCommonMultiple += clonedCounts[0]
+    const isMutualCommonMultipleValid = clonedCounts.every(count => mutualCommonMultiple % count === 0)
+    if (isMutualCommonMultipleValid) return mutualCommonMultiple
+  }
+}
+
+function getResultPart2() {
+  const currents = Array.from(nodeMap.keys()).filter(node => node.endsWith('A'))
+  const countToZOfCurrents = currents.map(getCountToZ)
+  return getMutualCommonMultipleOfCounts(countToZOfCurrents)
+}
+
+console.log('secondResult: ', getResultPart2())
