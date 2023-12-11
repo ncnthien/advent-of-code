@@ -71,3 +71,35 @@ function getPart1Result() {
 }
 
 console.log("firstResult: ", getPart1Result())
+
+function getDistanceFromOlderGalaxies(firstGalaxyPoint: number[], secondGalaxyPoint: number[], universe: string[][]): number {
+  const startRow = Math.min(firstGalaxyPoint[0], secondGalaxyPoint[0]) + 1
+  const endRow = Math.max(firstGalaxyPoint[0], secondGalaxyPoint[0])
+  const startCol = Math.min(firstGalaxyPoint[1], secondGalaxyPoint[1]) + 1
+  const endCol = Math.max(firstGalaxyPoint[1], secondGalaxyPoint[1])
+  let rowDistance = 0
+  let colDistance = 0
+  for (let i = startRow; i <= endRow; i++) {
+    rowDistance += isNoGalaxyContainedRow(i, universe) ? 1000000 : 1
+  }
+  for (let i = startCol; i <= endCol; i++) {
+    colDistance += isNoGalaxyContainedCol(i, universe) ? 1000000 : 1
+  }
+  return rowDistance + colDistance
+}
+
+function getPart2Result() {
+  const galaxies = getGalaxiesPointFromUniverse(universe)
+  let total = 0
+
+  for (let i = 0; i < galaxies.length; i++) {
+    for (let j = i + 1; j < galaxies.length; j++) {
+      total += getDistanceFromOlderGalaxies(galaxies[i], galaxies[j], universe)
+    }
+  }
+
+  return total
+}
+
+console.log('secondResult: ', getPart2Result())
+
